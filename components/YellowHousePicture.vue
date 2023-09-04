@@ -3,15 +3,15 @@
 </script>
 
 <template>
-  <img src="/yellow-house.svg" alt="Žlutý dům" class="yellowHousePicture" width="1920" height="1014" />
+  <div class="yellowHousePicture" />
 </template>
 
 <style>
 .yellowHousePicture {
-  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
+  background-image: url(/yellow-house.svg);
+  background-size: cover;
+  background-position: center bottom;
 }
 </style>

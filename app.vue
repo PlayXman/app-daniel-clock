@@ -59,6 +59,10 @@ function setTimer({hours, minutes, seconds}) {
   --palette-font-default: #1f1f1f;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   margin: 0;
   padding: 0;

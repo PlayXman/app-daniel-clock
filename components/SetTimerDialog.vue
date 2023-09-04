@@ -35,19 +35,21 @@ function handleSubmit(event) {
 <template>
   <dialog v-show="open" class="setTimerDialog">
     <form @submit="handleSubmit" class="setTimerDialog__content">
-      <div class="setTimerDialog__inputCell">
-        <label for="hours">Hodiny</label>
-        <input id="hours" type="number" min="0" v-model="hours">
-      </div>
+      <div class="setTimerDialog__fields">
+        <div>
+          <label for="hours">Hodiny</label>
+          <input id="hours" type="number" min="0" v-model="hours">
+        </div>
 
-      <div class="setTimerDialog__inputCell">
-        <label for="minutes">Minuty</label>
-        <input id="minutes" type="number" min="0" v-model="minutes">
-      </div>
+        <div>
+          <label for="minutes">Minuty</label>
+          <input id="minutes" type="number" min="0" v-model="minutes">
+        </div>
 
-      <div class="setTimerDialog__inputCell">
-        <label for="seconds">Sekundy</label>
-        <input id="seconds" type="number" min="0" v-model="seconds">
+        <div>
+          <label for="seconds">Sekundy</label>
+          <input id="seconds" type="number" min="0" v-model="seconds">
+        </div>
       </div>
 
       <div class="setTimerDialog__submitCell">
@@ -87,22 +89,31 @@ function handleSubmit(event) {
 .setTimerDialog__content {
   background: var(--palette-background);
   padding: 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 1rem;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
   z-index: 1;
+  margin: 1rem;
 }
 
-.setTimerDialog__inputCell label {
+.setTimerDialog__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.setTimerDialog__fields > * {
+  flex-grow: 1;
+}
+
+.setTimerDialog__fields label {
   display: block;
   margin-bottom: 0.5rem;
 }
 
-.setTimerDialog__inputCell input {
+.setTimerDialog__fields input {
   border: 1px solid var(--palette-font-default);
   padding: 0.5rem;
+  width: 100%;
 }
 
 .setTimerDialog__submitCell {
