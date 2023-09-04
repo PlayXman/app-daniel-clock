@@ -1,24 +1,29 @@
 <script setup>
 import ProgressClock from "~/components/ProgressClock.vue";
 
-const hours = ref(0);
-const minutes = ref(0);
-const seconds = ref(0);
-
+const timerDialogOpen = ref(false);
 const endDate = ref();
 const entryDate = ref();
 const now = ref(new Date());
 
-// Sets and starts the timer
-function setTimer(event) {
-  event.preventDefault();
+// Opens the set timer dialog
+function openTimerDialog() {
+  timerDialogOpen.value = true;
+}
 
+// Closes the set timer dialog
+function closeTimerDialog() {
+  timerDialogOpen.value = false;
+}
+
+// Sets and starts the timer
+function setTimer({hours, minutes, seconds}) {
   const nextEntryDate = new Date();
 
   const nextEndDate = new Date(nextEntryDate);
-  nextEndDate.setSeconds(nextEndDate.getSeconds() + seconds.value);
-  nextEndDate.setMinutes(nextEndDate.getMinutes() + minutes.value);
-  nextEndDate.setHours(nextEndDate.getHours() + hours.value);
+  nextEndDate.setSeconds(nextEndDate.getSeconds() + seconds);
+  nextEndDate.setMinutes(nextEndDate.getMinutes() + minutes);
+  nextEndDate.setHours(nextEndDate.getHours() + hours);
 
   endDate.value = nextEndDate;
   entryDate.value = nextEntryDate;
@@ -30,7 +35,7 @@ function setTimer(event) {
   <vite-pwa-manifest />
 
   <main class="container">
-    <section class="picture">
+    <section class="picture" @click="openTimerDialog">
       <yellow-house-picture />
     </section>
     <section class="timer">
@@ -43,34 +48,7 @@ function setTimer(event) {
     </section>
   </main>
 
-  <form @submit="setTimer">
-    <label for="hours">Hodiny</label>
-    <input id="hours" type="number" min="0" v-model="hours">
-
-    <label for="minutes">Minuty</label>
-    <input id="minutes" type="number" min="0" v-model="minutes">
-
-    <label for="seconds">Sekundy</label>
-    <input id="seconds" type="number" min="0" v-model="seconds">
-
-    <input type="submit" value="Start">
-  </form>
-<!--      <v-container>-->
-<!--        <v-row>-->
-<!--          <v-col cols="12" sm="3">-->
-<!--            <v-text-field label="Dny" variant="outlined" type="number" v-model="days" />-->
-<!--          </v-col>-->
-<!--          <v-col cols="12" sm="3">-->
-<!--            <v-text-field label="Hodiny" variant="outlined" type="number" v-model="hours" />-->
-<!--          </v-col>-->
-<!--          <v-col cols="12" sm="3">-->
-<!--            <v-text-field label="Minuty" variant="outlined" type="number" v-model="minutes" />-->
-<!--          </v-col>-->
-<!--          <v-col cols="12" sm="3">-->
-<!--            <v-text-field label="Sekundy" variant="outlined" type="number" v-model="seconds" />-->
-<!--          </v-col>-->
-<!--        </v-row>-->
-<!--      </v-container>-->
+  <set-timer-dialog :open="timerDialogOpen" :on-timer-set="setTimer" :on-close="closeTimerDialog" />
 </template>
 
 <style>
