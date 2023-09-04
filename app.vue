@@ -30,13 +30,15 @@ function setTimer(event) {
   <vite-pwa-manifest />
 
   <main class="container">
-    <section class="picture"></section>
+    <section class="picture">
+      <yellow-house-picture />
+    </section>
     <section class="timer">
       <div>
-        <ProgressClock :end-date="endDate" :now="now" />
+        <progress-clock :end-date="endDate" :now="now" />
       </div>
       <div>
-        <ProgressBar :entry-date="entryDate" :end-date="endDate" :now="now" />
+        <progress-bar :entry-date="entryDate" :end-date="endDate" :now="now" />
       </div>
     </section>
   </main>
@@ -76,6 +78,7 @@ function setTimer(event) {
   --palette-background: #FFFFFF;
   --palette-primary: #35aaea;
   --palette-secondary: #d1a43c;
+  --palette-font-default: #1f1f1f;
 }
 
 html, body {
@@ -83,6 +86,7 @@ html, body {
   padding: 0;
   font-family: sans-serif;
   background: var(--palette-background);
+  color: var(--palette-font-default);
 }
 
 .container {
