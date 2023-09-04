@@ -12,6 +12,7 @@ const props = defineProps({
   }
 });
 
+// How much percent has already passed
 const currentPercentage = computed(() => {
   if(props.endDate == null || props.entryDate == null) {
     return 0;
@@ -25,6 +26,7 @@ const currentPercentage = computed(() => {
   return result > 0 ? result : 0;
 });
 
+// How long should the animation take
 const duration = computed(() => {
   if(props.endDate == null) {
     return 0;
@@ -38,6 +40,7 @@ const duration = computed(() => {
   return result > 0 ? result : 0;
 });
 
+// Which animation should be used
 const animationIndex = ref(0);
 watch(() => props.endDate, () => {
   animationIndex.value = animationIndex.value === 2 ? 1 : 2;
@@ -45,17 +48,17 @@ watch(() => props.endDate, () => {
 </script>
 
 <template>
-  <div class="progress">
-    <div class="progress__value" :style="{
+  <div class="progressBar">
+    <div class="progressBar__value" :style="{
       width: `${currentPercentage}%`,
       animationDuration: `${duration}s`,
-      animationName: `progress-${animationIndex}`,
+      animationName: `progressBar-${animationIndex}`,
     }"></div>
   </div>
 </template>
 
 <style>
-@keyframes progress-1 {
+@keyframes progressBar-1 {
   0% {
     transform: scaleX(1);
   }
@@ -63,7 +66,7 @@ watch(() => props.endDate, () => {
     transform: scaleX(0);
   }
 }
-@keyframes progress-2 {
+@keyframes progressBar-2 {
   0% {
     transform: scaleX(1);
   }
@@ -72,7 +75,7 @@ watch(() => props.endDate, () => {
   }
 }
 
-.progress {
+.progressBar {
   appearance: none;
   border: none;
   margin: 0;
@@ -82,7 +85,7 @@ watch(() => props.endDate, () => {
   height: 3rem;
   background: #000;
 }
-.progress__value {
+.progressBar__value {
   background: var(--palette-primary);
   height: 100%;
   transform-origin: left center;

@@ -1,4 +1,6 @@
 <script setup>
+import ProgressClock from "~/components/ProgressClock.vue";
+
 const hours = ref(0);
 const minutes = ref(0);
 const seconds = ref(0);
@@ -7,6 +9,7 @@ const endDate = ref();
 const entryDate = ref();
 const now = ref(new Date());
 
+// Sets and starts the timer
 function setTimer(event) {
   event.preventDefault();
 
@@ -29,24 +32,24 @@ function setTimer(event) {
   <main class="container">
     <section class="picture"></section>
     <section class="timer">
-      <div class="timer__time">
-        300000000:00:00
+      <div>
+        <ProgressClock :end-date="endDate" :now="now" />
       </div>
-      <div class="timer__progress">
-        <Progress :entry-date="entryDate" :end-date="endDate" :now="now" />
+      <div>
+        <ProgressBar :entry-date="entryDate" :end-date="endDate" :now="now" />
       </div>
     </section>
   </main>
 
   <form @submit="setTimer">
     <label for="hours">Hodiny</label>
-    <input id="hours" type="number" v-model="hours">
+    <input id="hours" type="number" min="0" v-model="hours">
 
     <label for="minutes">Minuty</label>
-    <input id="minutes" type="number" v-model="minutes">
+    <input id="minutes" type="number" min="0" v-model="minutes">
 
     <label for="seconds">Sekundy</label>
-    <input id="seconds" type="number" v-model="seconds">
+    <input id="seconds" type="number" min="0" v-model="seconds">
 
     <input type="submit" value="Start">
   </form>
@@ -107,17 +110,5 @@ html, body {
     grid-template-columns: min-content 1fr;
     grid-template-rows: 1fr;
   }
-}
-
-.timer__time {
-  font-size: clamp(1.5rem, 3vw, 3rem);
-  text-align: center;
-  line-height: 1;
-  font-family: monospace;
-}
-
-.timer__progress {
-  flex-grow: 1;
-  min-width: 20%;
 }
 </style>
