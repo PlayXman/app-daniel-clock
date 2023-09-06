@@ -43,17 +43,17 @@ function handleSubmit(event) {
       <div class="setTimerDialog__fields">
         <div>
           <label for="hours">Hodiny</label>
-          <input id="hours" type="number" min="0" :value="hours" @input="hours = $event.target.value">
+          <input id="hours" type="number" min="0" :value="hours" @input="hours = $event.target.value || '0'">
         </div>
 
         <div>
           <label for="minutes">Minuty</label>
-          <input id="minutes" type="number" min="0" :value="minutes" @input="minutes = $event.target.value">
+          <input id="minutes" type="number" min="0" :value="minutes" @input="minutes = $event.target.value || '0'">
         </div>
 
         <div>
           <label for="seconds">Sekundy</label>
-          <input id="seconds" type="number" min="0" :value="seconds" @input="seconds = $event.target.value">
+          <input id="seconds" type="number" min="0" :value="seconds" @input="seconds = $event.target.value || '0'">
         </div>
       </div>
 

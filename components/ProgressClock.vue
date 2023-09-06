@@ -23,20 +23,24 @@ const interval = ref(-1);
 watch(() => props.totalTimerDuration, () => {
   remainingTime.value = props.totalTimerDuration.minus(props.startTime.minus(props.initialStartTime));
 
-  // Start the timer and update every second.
+  // Start the timer after 0.5s and update every second.
   clearInterval(interval.value);
-  interval.value = setInterval(() => {
+  setTimeout(() => {
     remainingTime.value = remainingTime.value.minus(1);
 
-    if(remainingTime.value <= 0) {
-      clearInterval(interval.value);
-    }
-  }, 1000);
+    interval.value = setInterval(() => {
+      remainingTime.value = remainingTime.value.minus(1);
+
+      if(remainingTime.value <= 0) {
+        clearInterval(interval.value);
+      }
+    }, 1000);
+  }, 500);
 });
 
 // Formatted time in HH:MM:SS
 const time = computed(() => {
-  const diff = remainingTime.value.minus(1); // TODO -1 is just a temporary fix
+  const diff = remainingTime.value;
   const formatter = Intl.NumberFormat('cz', {minimumIntegerDigits: 2, useGrouping: false});
   const bigNumberFormat = {};
 

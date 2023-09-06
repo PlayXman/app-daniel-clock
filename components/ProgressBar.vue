@@ -92,5 +92,6 @@ watch(() => props.totalTimerDuration, () => {
   transform-origin: left center;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+  animation-delay: 0.5s;
 }
 </style>
