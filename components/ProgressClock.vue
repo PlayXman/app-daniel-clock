@@ -6,15 +6,22 @@ const props = defineProps({
     type: BigNumber,
     required: true,
   },
+  initialStartTime: {
+    type: BigNumber,
+  },
+  startTime: {
+    type: BigNumber,
+    required: true,
+  },
 });
 
-/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+// In seconds.
 const remainingTime = ref(new BigNumber(0));
-/** Current interval timer ID */
+// Current interval timer ID.
 const interval = ref(-1);
 
 watch(() => props.totalTimerDuration, () => {
-  remainingTime.value = props.totalTimerDuration;
+  remainingTime.value = props.totalTimerDuration.minus(props.startTime.minus(props.initialStartTime));
 
   // Start the timer and update every second.
   clearInterval(interval.value);
@@ -29,7 +36,7 @@ watch(() => props.totalTimerDuration, () => {
 
 // Formatted time in HH:MM:SS
 const time = computed(() => {
-  const diff = remainingTime.value.minutes(1); // TODO -1 is just a temporary fix
+  const diff = remainingTime.value.minus(1); // TODO -1 is just a temporary fix
   const formatter = Intl.NumberFormat('cz', {minimumIntegerDigits: 2, useGrouping: false});
   const bigNumberFormat = {};
 
@@ -38,9 +45,9 @@ const time = computed(() => {
   let seconds = new BigNumber(0);
 
   if(diff > 0) {
-    hours = diff.diff(60 * 60).decimalPlaces(0);
-    minutes = diff.mod(60 * 60).div(60).decimalPlaces(0);
-    seconds = diff.mod(60).decimalPlaces(0);
+    hours = diff.div(60 * 60).decimalPlaces(0, BigNumber.ROUND_FLOOR);
+    minutes = diff.mod(60 * 60).div(60).decimalPlaces(0, BigNumber.ROUND_FLOOR);
+    seconds = diff.mod(60).decimalPlaces(0, BigNumber.ROUND_FLOOR);
   }
 
   return `${formatter.format(hours.toFormat(bigNumberFormat))}:${formatter.format(minutes.toFormat(bigNumberFormat))}:${formatter.format(seconds.toFormat(bigNumberFormat))}`;

@@ -4,11 +4,11 @@ import BigNumber from 'bignumber.js';
 
 const timerDialogOpen = ref(false);
 
-/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+// In seconds.
 const totalTimerDuration = ref(new BigNumber(0));
-/** @type {Ref<UnwrapRef<BigNumber | undefined>>} in seconds */
+// Timestamp in seconds.
 const initialStartTime = ref();
-/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+// Timestamp in seconds.
 const startTime = ref(convertDateToSeconds(new Date()));
 
 /**
@@ -16,7 +16,7 @@ const startTime = ref(convertDateToSeconds(new Date()));
  * @returns {BigNumber}
  */
 function convertDateToSeconds(date) {
-  return new BigNumber(date.getTime()).div(1000);
+  return new BigNumber(date.getTime()).div(1000).decimalPlaces(0, BigNumber.ROUND_FLOOR);
 }
 
 /**
@@ -60,10 +60,10 @@ function setTimer({hours, minutes, seconds}) {
     </section>
     <section class="timer">
       <div>
-        <progress-clock :end-date="endDate" :now="now" />
+        <progress-clock :total-timer-duration="totalTimerDuration" :initial-start-time="initialStartTime" :start-time="startTime" />
       </div>
       <div>
-        <progress-bar :entry-date="entryDate" :end-date="endDate" :now="now" />
+        <progress-bar :total-timer-duration="totalTimerDuration" :initial-start-time="initialStartTime" :start-time="startTime" />
       </div>
     </section>
   </main>

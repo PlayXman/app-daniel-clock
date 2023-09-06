@@ -1,48 +1,49 @@
 <script setup>
+import BigNumber from "bignumber.js";
+
 const props = defineProps({
-  endDate: {
-    type: Date,
-  },
-  entryDate: {
-    type: Date,
-  },
-  now: {
-    type: Date,
+  totalTimerDuration: {
+    type: BigNumber,
     required: true,
-  }
+  },
+  initialStartTime: {
+    type: BigNumber,
+  },
+  startTime: {
+    type: BigNumber,
+    required: true,
+  },
 });
 
-// How much percent has already passed
-const currentPercentage = computed(() => {
-  if(props.endDate == null || props.entryDate == null) {
-    return 0;
+// How much of the timer has passed in percentage since the last run.
+const percentage = computed(() => {
+  if(props.totalTimerDuration <= 0 || props.initialStartTime == null) {
+    return new BigNumber(0);
   }
 
-  const entryTime = props.entryDate.getTime();
-  let result = (props.now.getTime() - entryTime) / (props.endDate.getTime() - entryTime);
-  result = (1 - result) * 100;
-  result = Math.round(result);
+  let result = props.totalTimerDuration.minus(props.startTime.minus(props.initialStartTime)).div(props.totalTimerDuration);
+  result = result.times(100);
+  result = result.decimalPlaces(0, BigNumber.ROUND_HALF_UP);
 
-  return result > 0 ? result : 0;
+  return result.isGreaterThan(0) ? result : new BigNumber(0);
 });
 
-// How long should the animation take
+// How long should the animation last in seconds.
 const duration = computed(() => {
-  if(props.endDate == null) {
-    return 0;
+  if(props.initialStartTime == null) {
+    return new BigNumber(0);
   }
 
-  const percentage = currentPercentage.value / 100;
-  let result = props.endDate.getTime() * percentage - props.now.getTime();
-  result = result / 1000;
-  result = Math.round(result);
+  const percentageValue = percentage.value.div(100);
+  let result = props.totalTimerDuration.times(percentageValue);
+  result = result.decimalPlaces(0, BigNumber.ROUND_HALF_UP);
 
-  return result > 0 ? result : 0;
+  return result.isGreaterThan(0) ? result : new BigNumber(0);
 });
 
-// Which animation should be used
+// Which animation should be used.
 const animationIndex = ref(0);
-watch(() => props.endDate, () => {
+watch(() => props.totalTimerDuration, () => {
   animationIndex.value = animationIndex.value === 2 ? 1 : 2;
 });
 </script>
@@ -50,8 +51,8 @@ watch(() => props.endDate, () => {
 <template>
   <div class="progressBar">
     <div class="progressBar__value" :style="{
-      width: `${currentPercentage}%`,
-      animationDuration: `${duration}s`,
+      width: `${percentage.toString()}%`,
+      animationDuration: `${duration.toString()}s`,
       animationName: `progressBar-${animationIndex}`,
     }"></div>
   </div>
