@@ -1,33 +1,53 @@
 <script setup>
 import ProgressClock from "~/components/ProgressClock.vue";
+import BigNumber from 'bignumber.js';
 
 const timerDialogOpen = ref(false);
-const endDate = ref();
-const entryDate = ref();
-const now = ref(new Date());
 
-// Opens the set timer dialog
+/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+const totalTimerDuration = ref(new BigNumber(0));
+/** @type {Ref<UnwrapRef<BigNumber | undefined>>} in seconds */
+const initialStartTime = ref();
+/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+const startTime = ref(convertDateToSeconds(new Date()));
+
+/**
+ * @param {Date} date
+ * @returns {BigNumber}
+ */
+function convertDateToSeconds(date) {
+  return new BigNumber(date.getTime()).div(1000);
+}
+
+/**
+ * Opens the set timer dialog.
+ */
 function openTimerDialog() {
   timerDialogOpen.value = true;
 }
 
-// Closes the set timer dialog
+/**
+ * Closes the set timer dialog.
+ */
 function closeTimerDialog() {
   timerDialogOpen.value = false;
 }
 
-// Sets and starts the timer
+/**
+ * Sets and starts the timer.
+ * @param {BigNumber} hours
+ * @param {BigNumber} minutes
+ * @param {BigNumber} seconds
+ */
 function setTimer({hours, minutes, seconds}) {
-  const nextEntryDate = new Date();
+  let nextTotalTimerDuration = new BigNumber(seconds);
+  nextTotalTimerDuration = nextTotalTimerDuration.plus(minutes.times(60));
+  nextTotalTimerDuration = nextTotalTimerDuration.plus(hours.times(60 * 60));
+  totalTimerDuration.value = nextTotalTimerDuration.decimalPlaces(0);
 
-  const nextEndDate = new Date(nextEntryDate);
-  nextEndDate.setSeconds(nextEndDate.getSeconds() + seconds);
-  nextEndDate.setMinutes(nextEndDate.getMinutes() + minutes);
-  nextEndDate.setHours(nextEndDate.getHours() + hours);
-
-  endDate.value = nextEndDate;
-  entryDate.value = nextEntryDate;
-  now.value = nextEntryDate;
+  const now = convertDateToSeconds(new Date());
+  initialStartTime.value = now;
+  startTime.value = now;
 }
 </script>
 

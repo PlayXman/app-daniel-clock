@@ -1,30 +1,27 @@
 <script setup>
+import BigNumber from "bignumber.js";
+
 const props = defineProps({
-  endDate: {
-    type: Date,
-  },
-  now: {
-    type: Date,
+  totalTimerDuration: {
+    type: BigNumber,
     required: true,
-  }
+  },
 });
 
-// Difference between now and end date in seconds
-const difference = ref(0);
+/** @type {Ref<UnwrapRef<BigNumber>>} in seconds */
+const remainingTime = ref(new BigNumber(0));
+/** Current interval timer ID */
 const interval = ref(-1);
 
-watch(() => props.endDate, () => {
-  // Calculate difference in seconds
-  let d = (props.endDate?.getTime() ?? 0) - props.now.getTime();
-  d = Math.round(d / 1000);
-  difference.value = d > 0 ? d : 0;
+watch(() => props.totalTimerDuration, () => {
+  remainingTime.value = props.totalTimerDuration;
 
-  // Update every second
+  // Start the timer and update every second.
   clearInterval(interval.value);
   interval.value = setInterval(() => {
-    difference.value = difference.value - 1;
+    remainingTime.value = remainingTime.value.minus(1);
 
-    if(difference.value <= 0) {
+    if(remainingTime.value <= 0) {
       clearInterval(interval.value);
     }
   }, 1000);
@@ -32,21 +29,21 @@ watch(() => props.endDate, () => {
 
 // Formatted time in HH:MM:SS
 const time = computed(() => {
-  const diff = difference.value - 1; // TODO -1 is just a temporary fix
+  const diff = remainingTime.value.minutes(1); // TODO -1 is just a temporary fix
   const formatter = Intl.NumberFormat('cz', {minimumIntegerDigits: 2, useGrouping: false});
-  const result = {
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  };
+  const bigNumberFormat = {};
+
+  let hours = new BigNumber(0);
+  let minutes = new BigNumber(0);
+  let seconds = new BigNumber(0);
 
   if(diff > 0) {
-    result.hours = Math.floor(diff / (60 * 60))
-    result.minutes = Math.floor(diff % (60 * 60) / 60)
-    result.seconds = Math.floor(diff % 60)
+    hours = diff.diff(60 * 60).decimalPlaces(0);
+    minutes = diff.mod(60 * 60).div(60).decimalPlaces(0);
+    seconds = diff.mod(60).decimalPlaces(0);
   }
 
-  return `${formatter.format(result.hours)}:${formatter.format(result.minutes)}:${formatter.format(result.seconds)}`;
+  return `${formatter.format(hours.toFormat(bigNumberFormat))}:${formatter.format(minutes.toFormat(bigNumberFormat))}:${formatter.format(seconds.toFormat(bigNumberFormat))}`;
 });
 </script>
 

@@ -1,4 +1,6 @@
 <script setup>
+import BigNumber from 'bignumber.js';
+
 const props = defineProps({
   open: {
     type: Boolean,
@@ -14,20 +16,23 @@ const props = defineProps({
   },
 });
 
-const hours = ref(0);
-const minutes = ref(0);
-const seconds = ref(0);
+const hours = ref("0");
+const minutes = ref("0");
+const seconds = ref("0");
 
-// Is triggered on start button click
+/**
+ * Handles the start button click. And sets time on the timer.
+ * @param event
+ */
 function handleSubmit(event) {
   event.preventDefault();
 
   props.onClose();
 
   props.onTimerSet({
-    hours: hours.value,
-    minutes: minutes.value,
-    seconds: seconds.value,
+    hours: new BigNumber(hours.value),
+    minutes: new BigNumber(minutes.value),
+    seconds: new BigNumber(seconds.value),
   });
 }
 </script>
@@ -38,17 +43,17 @@ function handleSubmit(event) {
       <div class="setTimerDialog__fields">
         <div>
           <label for="hours">Hodiny</label>
-          <input id="hours" type="number" min="0" v-model="hours">
+          <input id="hours" type="number" min="0" :value="hours" @input="hours = $event.target.value">
         </div>
 
         <div>
           <label for="minutes">Minuty</label>
-          <input id="minutes" type="number" min="0" v-model="minutes">
+          <input id="minutes" type="number" min="0" :value="minutes" @input="minutes = $event.target.value">
         </div>
 
         <div>
           <label for="seconds">Sekundy</label>
-          <input id="seconds" type="number" min="0" v-model="seconds">
+          <input id="seconds" type="number" min="0" :value="seconds" @input="seconds = $event.target.value">
         </div>
       </div>
 

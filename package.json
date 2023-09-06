@@ -12,6 +12,7 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@vite-pwa/nuxt": "^0.1.0",
+    "bignumber.js": "^9.1.2",
     "nuxt": "^3.7.0"
   }
 }
