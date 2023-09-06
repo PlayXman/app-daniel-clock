@@ -32,7 +32,7 @@ watch(() => props.endDate, () => {
 
 // Formatted time in HH:MM:SS
 const time = computed(() => {
-  const diff = difference.value;
+  const diff = difference.value - 1; // TODO -1 is just a temporary fix
   const formatter = Intl.NumberFormat('cz', {minimumIntegerDigits: 2, useGrouping: false});
   const result = {
     hours: 0,
@@ -61,6 +61,6 @@ const time = computed(() => {
   font-size: clamp(1.5rem, 3vw, 3rem);
   text-align: center;
   line-height: 1;
-  font-family: monospace;
+  font-family: Arial, sans-serif;
 }
 </style>
