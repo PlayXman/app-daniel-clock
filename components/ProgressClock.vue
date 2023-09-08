@@ -25,17 +25,15 @@ watch(() => props.totalTimerDuration, () => {
 
   // Start the timer after 0.5s and update every second.
   clearInterval(interval.value);
-  setTimeout(() => {
+  remainingTime.value = remainingTime.value.minus(1);
+
+  interval.value = setInterval(() => {
     remainingTime.value = remainingTime.value.minus(1);
 
-    interval.value = setInterval(() => {
-      remainingTime.value = remainingTime.value.minus(1);
-
-      if(remainingTime.value <= 0) {
-        clearInterval(interval.value);
-      }
-    }, 1000);
-  }, 500);
+    if(remainingTime.value <= 0) {
+      clearInterval(interval.value);
+    }
+  }, 1000);
 });
 
 // Formatted time in HH:MM:SS

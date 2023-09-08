@@ -1,6 +1,7 @@
 <script setup>
 import ProgressClock from "~/components/ProgressClock.vue";
 import BigNumber from 'bignumber.js';
+import {loadTimerLocally} from "~/utils/localStorage";
 
 const timerDialogOpen = ref(false);
 
@@ -48,7 +49,17 @@ function setTimer({hours, minutes, seconds}) {
   const now = convertDateToSeconds(new Date());
   initialStartTime.value = now;
   startTime.value = now;
+
+  saveTimerLocally(nextTotalTimerDuration, now);
 }
+
+onMounted(() => {
+  const lastTimer = loadTimerLocally();
+
+  totalTimerDuration.value = lastTimer.totalTimerDuration;
+  initialStartTime.value = lastTimer.startTime;
+  startTime.value = convertDateToSeconds(new Date());
+});
 </script>
 
 <template>
