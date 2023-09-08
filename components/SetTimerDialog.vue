@@ -1,5 +1,6 @@
 <script setup>
 import BigNumber from 'bignumber.js';
+import {loadTimerFromFile} from "~/utils/localStorage";
 
 const props = defineProps({
   open: {
@@ -11,6 +12,10 @@ const props = defineProps({
     required: true,
   },
   onClose: {
+    type: Function,
+    required: true,
+  },
+  onLoadFromFile: {
     type: Function,
     required: true,
   },
@@ -35,11 +40,35 @@ function handleSubmit(event) {
     seconds: new BigNumber(seconds.value),
   });
 }
+
+/**
+ * Export locally saved timer to a file.
+ * @param event
+ */
+function handleSaveTimer(event) {
+  event.preventDefault();
+  saveTimerInFile();
+}
+
+/**
+ * Load timer from a file and save it in local storage.
+ * @param event
+ * @returns {Promise<void>}
+ */
+async function handleLoadTimer(event) {
+  event.preventDefault();
+
+  await loadTimerFromFile(event.target.files[0]);
+
+  props.onClose();
+  props.onLoadFromFile();
+}
 </script>
 
 <template>
   <dialog v-show="open" class="setTimerDialog">
     <form @submit="handleSubmit" class="setTimerDialog__content">
+      <h3>Nastavit nový odpočet</h3>
       <div class="setTimerDialog__fields">
         <div>
           <label for="hours">Hodiny</label>
@@ -54,6 +83,18 @@ function handleSubmit(event) {
         <div>
           <label for="seconds">Sekundy</label>
           <input id="seconds" type="number" min="0" :value="seconds" @input="seconds = $event.target.value || '0'">
+        </div>
+      </div>
+
+      <h3>Nahrát nebo uložit odpočet</h3>
+      <div class="setTimerDialog__saveLoad-content">
+        <div>
+          <h4>Uložit aktuální odpočet</h4>
+          <button @click="handleSaveTimer">Stáhnout soubor</button>
+        </div>
+        <div>
+          <h4>Nahrát uložený odpočet</h4>
+          <input type="file" accept=".json" @input="handleLoadTimer">
         </div>
       </div>
 
@@ -119,6 +160,19 @@ function handleSubmit(event) {
   border: 1px solid var(--palette-font-default);
   padding: 0.5rem;
   width: 100%;
+}
+
+.setTimerDialog__saveLoad-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.setTimerDialog__saveLoad-content > * {
+  flex-grow: 1;
+  flex-basis: 14rem;
+  background: #eee;
+  padding: 0 1rem 1rem;
 }
 
 .setTimerDialog__submitCell {

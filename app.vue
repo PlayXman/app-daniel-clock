@@ -53,12 +53,27 @@ function setTimer({hours, minutes, seconds}) {
   saveTimerLocally(nextTotalTimerDuration, now);
 }
 
-onMounted(() => {
+/**
+ * Load latest timer from local storage.
+ */
+function loadTimerFromLocalStorage() {
   const lastTimer = loadTimerLocally();
 
   totalTimerDuration.value = lastTimer.totalTimerDuration;
   initialStartTime.value = lastTimer.startTime;
   startTime.value = convertDateToSeconds(new Date());
+}
+
+/**
+ * Load timer from a file.
+ */
+function loadTimerFromFile() {
+  loadTimerFromLocalStorage()
+}
+
+// Load latest timer from local storage on mount and start countdown.
+onMounted(() => {
+  loadTimerFromLocalStorage();
 });
 </script>
 
@@ -79,7 +94,7 @@ onMounted(() => {
     </section>
   </main>
 
-  <set-timer-dialog :open="timerDialogOpen" :on-timer-set="setTimer" :on-close="closeTimerDialog" />
+  <set-timer-dialog :open="timerDialogOpen" :on-timer-set="setTimer" :on-close="closeTimerDialog" :on-load-from-file="loadTimerFromFile" />
 </template>
 
 <style>
