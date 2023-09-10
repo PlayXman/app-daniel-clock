@@ -82,11 +82,11 @@ onMounted(() => {
 <template>
   <vite-pwa-manifest />
 
-  <main class="container">
-    <section class="picture" @click="otevriFormularCasovace">
+  <main class="kontejner">
+    <section class="obrazek" @click="otevriFormularCasovace">
       <obrazek-zluteho-domu />
     </section>
-    <section class="timer">
+    <section class="casovac">
       <div>
         <hodiny-odpoctu :delka-casovace="delkaCasovace" :prvni-spusteni-casovace="prvniSpusteniCasovace" :cas-spusteni="casSpusteni" />
       </div>
@@ -101,10 +101,9 @@ onMounted(() => {
 
 <style>
 :root {
-  --palette-background: #FFFFFF;
-  --palette-primary: #35aaea;
-  --palette-secondary: #d1a43c;
-  --palette-font-default: #1f1f1f;
+  --paleta-pozadi: #FFFFFF;
+  --paleta-primarni: #35aaea;
+  --paleta-font-zakladni: #1f1f1f;
 }
 
 * {
@@ -115,11 +114,11 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: var(--palette-background);
-  color: var(--palette-font-default);
+  background: var(--paleta-pozadi);
+  color: var(--paleta-font-zakladni);
 }
 
-.container {
+.kontejner {
   height: 100vh;
   overflow: auto;
   display: grid;
@@ -127,11 +126,11 @@ html, body {
   grid-template-rows: auto min-content;
 }
 
-.picture {
+.obrazek {
   background: lightgray;
 }
 
-.timer {
+.casovac {
   padding: 1rem;
   gap: 1rem;
   display: grid;
@@ -140,7 +139,7 @@ html, body {
   grid-template-rows: 1fr 1fr;
 }
 @media (min-width: 600px) {
-  .timer {
+  .casovac {
     grid-template-columns: min-content 1fr;
     grid-template-rows: 1fr;
   }

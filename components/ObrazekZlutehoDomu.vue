@@ -1,9 +1,9 @@
 <template>
-  <div class="yellowHousePicture" />
+  <div class="obrazekZlutehoDomu" />
 </template>
 
 <style>
-.yellowHousePicture {
+.obrazekZlutehoDomu {
   width: 100%;
   height: 100%;
   background-image: url(/yellow-house.svg);

@@ -57,13 +57,13 @@ const formatovanyCas = computed(() => {
 </script>
 
 <template>
-  <div class="progressClock">
+  <div class="hodinyOdpoctu">
     {{ formatovanyCas }}
   </div>
 </template>
 
 <style>
-.progressClock {
+.hodinyOdpoctu {
   font-size: clamp(1.5rem, 3vw, 3rem);
   text-align: center;
   line-height: 1;

@@ -49,17 +49,17 @@ watch(() => props.delkaCasovace, () => {
 </script>
 
 <template>
-  <div class="progressBar">
-    <div class="progressBar__value" :style="{
+  <div class="ukazatelOdpoctu">
+    <div class="ukazatelOdpoctu__hodnota" :style="{
       width: `${procenta.toString()}%`,
       animationDuration: `${delka.toString()}s`,
-      animationName: `progressBar-${indexAnimace}`,
+      animationName: `ukazatelOdpoctu-${indexAnimace}`,
     }"></div>
   </div>
 </template>
 
 <style>
-@keyframes progressBar-1 {
+@keyframes ukazatelOdpoctu-1 {
   0% {
     transform: scaleX(1);
   }
@@ -67,7 +67,7 @@ watch(() => props.delkaCasovace, () => {
     transform: scaleX(0);
   }
 }
-@keyframes progressBar-2 {
+@keyframes ukazatelOdpoctu-2 {
   0% {
     transform: scaleX(1);
   }
@@ -76,7 +76,7 @@ watch(() => props.delkaCasovace, () => {
   }
 }
 
-.progressBar {
+.ukazatelOdpoctu {
   appearance: none;
   border: none;
   margin: 0;
@@ -86,8 +86,8 @@ watch(() => props.delkaCasovace, () => {
   height: 3rem;
   background: #000;
 }
-.progressBar__value {
-  background: var(--palette-primary);
+.ukazatelOdpoctu__hodnota {
+  background: var(--paleta-primarni);
   height: 100%;
   transform-origin: left center;
   animation-timing-function: linear;

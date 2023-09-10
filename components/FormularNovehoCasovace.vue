@@ -62,10 +62,10 @@ async function priNacteniZeSouboru(udalost) {
 </script>
 
 <template>
-  <dialog v-show="otevrit" class="setTimerDialog">
-    <form @submit="priSpusteniNovehoCasovace" class="setTimerDialog__content">
+  <dialog v-show="otevrit" class="formularNovehoCasovace">
+    <form @submit="priSpusteniNovehoCasovace" class="formularNovehoCasovace__obsah">
       <h3>Nastavit nový odpočet</h3>
-      <div class="setTimerDialog__fields">
+      <div class="formularNovehoCasovace__pole">
         <div>
           <label for="hodiny">Hodiny</label>
           <input id="hodiny" type="number" min="0" :value="hodiny" @input="hodiny = $event.target.value || '0'">
@@ -83,7 +83,7 @@ async function priNacteniZeSouboru(udalost) {
       </div>
 
       <h3>Nahrát nebo uložit odpočet</h3>
-      <div class="setTimerDialog__saveLoad-content">
+      <div class="formularNovehoCasovace__ulozNacti-obsah">
         <div>
           <h4>Uložit aktuální odpočet</h4>
           <button @click="priExportuCasovace">Stáhnout soubor</button>
@@ -94,17 +94,17 @@ async function priNacteniZeSouboru(udalost) {
         </div>
       </div>
 
-      <div class="setTimerDialog__submitCell">
+      <div class="formularNovehoCasovace__spust">
         <input type="submit" value="Start">
       </div>
     </form>
 
-    <div class="setTimerDialog__backdrop" @click="priZavreni" />
+    <div class="formularNovehoCasovace__kryti" @click="priZavreni" />
   </dialog>
 </template>
 
 <style>
-.setTimerDialog {
+.formularNovehoCasovace {
   position: fixed;
   top: 0;
   left: 0;
@@ -118,7 +118,7 @@ async function priNacteniZeSouboru(udalost) {
   background: transparent;
 }
 
-.setTimerDialog__backdrop {
+.formularNovehoCasovace__kryti {
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
@@ -128,58 +128,58 @@ async function priNacteniZeSouboru(udalost) {
   z-index: 0;
 }
 
-.setTimerDialog__content {
-  background: var(--palette-background);
+.formularNovehoCasovace__obsah {
+  background: var(--paleta-pozadi);
   padding: 1rem;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
   z-index: 1;
   margin: 1rem;
 }
 
-.setTimerDialog__fields {
+.formularNovehoCasovace__pole {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.setTimerDialog__fields > * {
+.formularNovehoCasovace__pole > * {
   flex-grow: 1;
 }
 
-.setTimerDialog__fields label {
+.formularNovehoCasovace__pole label {
   display: block;
   margin-bottom: 0.5rem;
 }
 
-.setTimerDialog__fields input {
-  border: 1px solid var(--palette-font-default);
+.formularNovehoCasovace__pole input {
+  border: 1px solid var(--paleta-font-zakladni);
   padding: 0.5rem;
   width: 100%;
 }
 
-.setTimerDialog__saveLoad-content {
+.formularNovehoCasovace__ulozNacti-obsah {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 2rem;
 }
-.setTimerDialog__saveLoad-content > * {
+.formularNovehoCasovace__ulozNacti-obsah > * {
   flex-grow: 1;
   flex-basis: 14rem;
   background: #eee;
   padding: 0 1rem 1rem;
 }
 
-.setTimerDialog__submitCell {
+.formularNovehoCasovace__spust {
   text-align: center;
   grid-column: 1 / -1;
 }
 
-.setTimerDialog__submitCell input {
-  background: var(--palette-primary);
+.formularNovehoCasovace__spust input {
+  background: var(--paleta-primarni);
   color: #fff;
   padding: 1rem 2rem;
-  border: 1px solid var(--palette-font-default);
+  border: 1px solid var(--paleta-font-zakladni);
 }
 </style>
