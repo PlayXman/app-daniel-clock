@@ -1,88 +1,84 @@
 <script setup>
 import BigNumber from 'bignumber.js';
-import {loadTimerFromFile} from "~/utils/localStorage";
+import {exportovatCasovacDoSouboru, importovatCasovacZeSouboru} from "~/utils/localStorage";
 
 const props = defineProps({
-  open: {
+  otevrit: {
     type: Boolean,
     required: true,
   },
-  onTimerSet: {
+  priNastaveniCasovace: {
     type: Function,
     required: true,
   },
-  onClose: {
+  priZavreni: {
     type: Function,
     required: true,
   },
-  onLoadFromFile: {
+  priNacteniZeSouboru: {
     type: Function,
     required: true,
   },
 });
 
-const hours = ref("0");
-const minutes = ref("0");
-const seconds = ref("0");
+const hodiny = ref("0");
+const minuty = ref("0");
+const sekundy = ref("0");
 
 /**
- * Handles the start button click. And sets time on the timer.
- * @param event
+ * Nastaví a spustí nový časovač při stisku tlačítka "Start".
+ * @param udalost
  */
-function handleSubmit(event) {
-  event.preventDefault();
+function priSpusteniNovehoCasovace(udalost) {
+  udalost.preventDefault();
 
-  props.onClose();
+  props.priZavreni();
 
-  props.onTimerSet({
-    hours: new BigNumber(hours.value),
-    minutes: new BigNumber(minutes.value),
-    seconds: new BigNumber(seconds.value),
-  });
+  props.priNastaveniCasovace(new BigNumber(hodiny.value), new BigNumber(minuty.value), new BigNumber(sekundy.value));
 }
 
 /**
- * Export locally saved timer to a file.
- * @param event
+ * Exportuje lokálně uložený časovač do souboru.
+ * @param udalost
  */
-function handleSaveTimer(event) {
-  event.preventDefault();
-  saveTimerInFile();
+function priExportuCasovace(udalost) {
+  udalost.preventDefault();
+  exportovatCasovacDoSouboru();
 }
 
 /**
- * Load timer from a file and save it in local storage.
- * @param event
+ * Načte časovač ze souboru a uloží ho do lokálního úložiště.
+ * @param udalost
  * @returns {Promise<void>}
  */
-async function handleLoadTimer(event) {
-  event.preventDefault();
+async function priNacteniZeSouboru(udalost) {
+  udalost.preventDefault();
 
-  await loadTimerFromFile(event.target.files[0]);
+  await importovatCasovacZeSouboru(udalost.target.files[0]);
 
-  props.onClose();
-  props.onLoadFromFile();
+  props.priZavreni();
+  props.priNacteniZeSouboru();
 }
 </script>
 
 <template>
-  <dialog v-show="open" class="setTimerDialog">
-    <form @submit="handleSubmit" class="setTimerDialog__content">
+  <dialog v-show="otevrit" class="setTimerDialog">
+    <form @submit="priSpusteniNovehoCasovace" class="setTimerDialog__content">
       <h3>Nastavit nový odpočet</h3>
       <div class="setTimerDialog__fields">
         <div>
-          <label for="hours">Hodiny</label>
-          <input id="hours" type="number" min="0" :value="hours" @input="hours = $event.target.value || '0'">
+          <label for="hodiny">Hodiny</label>
+          <input id="hodiny" type="number" min="0" :value="hodiny" @input="hodiny = $event.target.value || '0'">
         </div>
 
         <div>
-          <label for="minutes">Minuty</label>
-          <input id="minutes" type="number" min="0" :value="minutes" @input="minutes = $event.target.value || '0'">
+          <label for="minuty">Minuty</label>
+          <input id="minuty" type="number" min="0" :value="minuty" @input="minuty = $event.target.value || '0'">
         </div>
 
         <div>
-          <label for="seconds">Sekundy</label>
-          <input id="seconds" type="number" min="0" :value="seconds" @input="seconds = $event.target.value || '0'">
+          <label for="sekundy">Sekundy</label>
+          <input id="sekundy" type="number" min="0" :value="sekundy" @input="sekundy = $event.target.value || '0'">
         </div>
       </div>
 
@@ -90,11 +86,11 @@ async function handleLoadTimer(event) {
       <div class="setTimerDialog__saveLoad-content">
         <div>
           <h4>Uložit aktuální odpočet</h4>
-          <button @click="handleSaveTimer">Stáhnout soubor</button>
+          <button @click="priExportuCasovace">Stáhnout soubor</button>
         </div>
         <div>
           <h4>Nahrát uložený odpočet</h4>
-          <input type="file" accept=".json" @input="handleLoadTimer">
+          <input type="file" accept=".json" @input="priNacteniZeSouboru">
         </div>
       </div>
 
@@ -103,7 +99,7 @@ async function handleLoadTimer(event) {
       </div>
     </form>
 
-    <div class="setTimerDialog__backdrop" @click="onClose" />
+    <div class="setTimerDialog__backdrop" @click="priZavreni" />
   </dialog>
 </template>
 

@@ -1,79 +1,81 @@
 <script setup>
-import ProgressClock from "~/components/ProgressClock.vue";
 import BigNumber from 'bignumber.js';
-import {loadTimerLocally} from "~/utils/localStorage";
+import {nacistCasovacZLocalStorage, ulozitCasovacDoLocalStorage} from "~/utils/localStorage";
+import ObrazekZlutehoDomu from "~/components/ObrazekZlutehoDomu.vue";
+import FormularNovehoCasovace from "~/components/FormularNovehoCasovace.vue";
+import UkazatelOdpoctu from "~/components/UkazatelOdpoctu.vue";
+import HodinyOdpoctu from "~/components/HodinyOdpoctu.vue";
 
-const timerDialogOpen = ref(false);
-
-// In seconds.
-const totalTimerDuration = ref(new BigNumber(0));
-// Timestamp in seconds.
-const initialStartTime = ref();
-// Timestamp in seconds.
-const startTime = ref(convertDateToSeconds(new Date()));
+const jeFormularCasovaceOtevreny = ref(false);
+// Celková délka časovače v sekundách tak, jak ji zadal uživatel.
+const delkaCasovace = ref(new BigNumber(0));
+// Časová značka v sekundách. Kdy byl časovač poprvé nastaven a spuštěn.
+const prvniSpusteniCasovace = ref();
+// Časová značka v sekundách. Kdy se má časovač spustit. Většinou teď hned.
+const casSpusteni = ref(zkonvertujDatumNaSekundy(new Date()));
 
 /**
- * @param {Date} date
+ * @param {Date} datum
  * @returns {BigNumber}
  */
-function convertDateToSeconds(date) {
-  return new BigNumber(date.getTime()).div(1000).decimalPlaces(0, BigNumber.ROUND_FLOOR);
+function zkonvertujDatumNaSekundy(datum) {
+  return new BigNumber(datum.getTime()).div(1000).decimalPlaces(0, BigNumber.ROUND_FLOOR);
 }
 
 /**
- * Opens the set timer dialog.
+ * Zobrazí formulář pro nastavení časovače.
  */
-function openTimerDialog() {
-  timerDialogOpen.value = true;
+function otevriFormularCasovace() {
+  jeFormularCasovaceOtevreny.value = true;
 }
 
 /**
- * Closes the set timer dialog.
+ * Zavře formulář pro nastavení časovače.
  */
-function closeTimerDialog() {
-  timerDialogOpen.value = false;
+function zavriFormularCasovace() {
+  jeFormularCasovaceOtevreny.value = false;
 }
 
 /**
- * Sets and starts the timer.
- * @param {BigNumber} hours
- * @param {BigNumber} minutes
- * @param {BigNumber} seconds
+ * Nastaví a spustí nový časovač.
+ * @param {BigNumber} hodiny
+ * @param {BigNumber} minuty
+ * @param {BigNumber} sekundy
  */
-function setTimer({hours, minutes, seconds}) {
-  let nextTotalTimerDuration = new BigNumber(seconds);
-  nextTotalTimerDuration = nextTotalTimerDuration.plus(minutes.times(60));
-  nextTotalTimerDuration = nextTotalTimerDuration.plus(hours.times(60 * 60));
-  totalTimerDuration.value = nextTotalTimerDuration.decimalPlaces(0);
+function nastavCasovac(hodiny, minuty, sekundy) {
+  let novaDelkaCasovace = new BigNumber(sekundy);
+  novaDelkaCasovace = novaDelkaCasovace.plus(minuty.times(60));
+  novaDelkaCasovace = novaDelkaCasovace.plus(hodiny.times(60 * 60));
+  delkaCasovace.value = novaDelkaCasovace.decimalPlaces(0);
 
-  const now = convertDateToSeconds(new Date());
-  initialStartTime.value = now;
-  startTime.value = now;
+  const ted = zkonvertujDatumNaSekundy(new Date());
+  prvniSpusteniCasovace.value = ted;
+  casSpusteni.value = ted;
 
-  saveTimerLocally(nextTotalTimerDuration, now);
+  ulozitCasovacDoLocalStorage(novaDelkaCasovace, ted);
 }
 
 /**
- * Load latest timer from local storage.
+ * Načte predešlý časovač z lokálního úložiště.
  */
-function loadTimerFromLocalStorage() {
-  const lastTimer = loadTimerLocally();
+function nactiPredeslyCasovac() {
+  const predeslyCasovac = nacistCasovacZLocalStorage();
 
-  totalTimerDuration.value = lastTimer.totalTimerDuration;
-  initialStartTime.value = lastTimer.startTime;
-  startTime.value = convertDateToSeconds(new Date());
+  delkaCasovace.value = predeslyCasovac.totalTimerDuration;
+  prvniSpusteniCasovace.value = predeslyCasovac.startTime;
+  casSpusteni.value = zkonvertujDatumNaSekundy(new Date());
 }
 
 /**
- * Load timer from a file.
+ * Načte časovač ze souboru.
  */
-function loadTimerFromFile() {
-  loadTimerFromLocalStorage()
+function importovatCasovacZeSouboru() {
+  nactiPredeslyCasovac()
 }
 
-// Load latest timer from local storage on mount and start countdown.
+// Načti předeslý časovač z lokálního úložiště a spusti odpočet. Stane se tak pouze při prvním načtení aplikace.
 onMounted(() => {
-  loadTimerFromLocalStorage();
+  nactiPredeslyCasovac();
 });
 </script>
 
@@ -81,20 +83,20 @@ onMounted(() => {
   <vite-pwa-manifest />
 
   <main class="container">
-    <section class="picture" @click="openTimerDialog">
-      <yellow-house-picture />
+    <section class="picture" @click="otevriFormularCasovace">
+      <obrazek-zluteho-domu />
     </section>
     <section class="timer">
       <div>
-        <progress-clock :total-timer-duration="totalTimerDuration" :initial-start-time="initialStartTime" :start-time="startTime" />
+        <hodiny-odpoctu :delka-casovace="delkaCasovace" :prvni-spusteni-casovace="prvniSpusteniCasovace" :cas-spusteni="casSpusteni" />
       </div>
       <div>
-        <progress-bar :total-timer-duration="totalTimerDuration" :initial-start-time="initialStartTime" :start-time="startTime" />
+        <ukazatel-odpoctu :delka-casovace="delkaCasovace" :prvni-spusteni-casovace="prvniSpusteniCasovace" :cas-spusteni="casSpusteni" />
       </div>
     </section>
   </main>
 
-  <set-timer-dialog :open="timerDialogOpen" :on-timer-set="setTimer" :on-close="closeTimerDialog" :on-load-from-file="loadTimerFromFile" />
+  <formular-noveho-casovace :otevrit="jeFormularCasovaceOtevreny" :pri-nastaveni-casovace="nastavCasovac" :pri-zavreni="zavriFormularCasovace" :pri-nacteni-ze-souboru="importovatCasovacZeSouboru" />
 </template>
 
 <style>
