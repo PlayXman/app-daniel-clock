@@ -4,6 +4,7 @@ Jde o webovou aplikaci, kterou si navrhl sám Dan. Nejedná se o nic jiného, ne
 
 - URL: https://app-daniel-clock.web.app/
 - Hosting: [Firebase](https://console.firebase.google.com/project/app-daniel-clock/hosting/sites/app-daniel-clock) (pod účtem M.Baroňe; je možné přidat dalšího uživatele)
+- Zdrojové kódy: https://github.com/PlayXman/app-daniel-clock
 
 Jak to funguje?
 ---------------
