@@ -4,12 +4,17 @@ export default defineNuxtConfig({
   modules: [
     '@vite-pwa/nuxt',
   ],
+  app: {
+    head: {
+      title: 'Danův časovač',
+    }
+  },
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Danovy hodiny',
-      short_name: 'Danovy hodiny',
-      theme_color: '#ffffff',
+      name: 'Danův časovač',
+      short_name: 'Danův časovač',
+      theme_color: '#35aaea',
       icons: [
         {
           src: 'pwa-192x192.png',
