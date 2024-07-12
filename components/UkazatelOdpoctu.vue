@@ -2,30 +2,20 @@
 import BigNumber from "bignumber.js";
 
 const props = defineProps({
+  /** Celková délka časovače v sekundách. */
   delkaCasovace: {
     type: BigNumber,
     required: true,
   },
+  /** Datum prvního spuštění časovače v sekundách. */
   prvniSpusteniCasovace: {
     type: BigNumber,
   },
+  /** Čas aktivace odpopočtu v sekundách. */
   casSpusteni: {
     type: BigNumber,
     required: true,
   },
-});
-
-// Jak moc má být časovač zatím naplněný. Od minula již uběhlo určité množství procent.
-const procenta = computed(() => {
-  if(props.delkaCasovace <= 0 || props.prvniSpusteniCasovace == null) {
-    return new BigNumber(0);
-  }
-
-  let vysledek = props.delkaCasovace.minus(props.casSpusteni.minus(props.prvniSpusteniCasovace)).div(props.delkaCasovace);
-  vysledek = vysledek.times(100);
-  vysledek = vysledek.decimalPlaces(0, BigNumber.ROUND_HALF_UP);
-
-  return vysledek.isGreaterThan(0) ? vysledek : new BigNumber(0);
 });
 
 // Jak dlouho by měla animace trvat v sekundách.
@@ -33,12 +23,20 @@ const delka = computed(() => {
   if(props.prvniSpusteniCasovace == null) {
     return new BigNumber(0);
   }
+  return props.delkaCasovace;
+});
 
-  const procentniZlomek = procenta.value.div(100);
-  let vysledek = props.delkaCasovace.times(procentniZlomek);
-  vysledek = vysledek.decimalPlaces(0, BigNumber.ROUND_HALF_UP);
+// Jak moc časovače uběhlo od jeho spuštění. V sekundách.
+const uplynuloSekund = computed(() => {
+  if(props.prvniSpusteniCasovace == null) {
+    return new BigNumber(0);
+  }
 
-  return vysledek.isGreaterThan(0) ? vysledek : new BigNumber(0);
+  const vysledek = props.casSpusteni.minus(props.prvniSpusteniCasovace);
+  if(vysledek.gt(delka.value)) {
+    return delka.value;
+  }
+  return vysledek;
 });
 
 // Která animace má být použita.
@@ -51,8 +49,8 @@ watch(() => props.delkaCasovace, () => {
 <template>
   <div class="ukazatelOdpoctu">
     <div class="ukazatelOdpoctu__hodnota" :style="{
-      width: `${procenta.toString()}%`,
       animationDuration: `${delka.toString()}s`,
+      animationDelay: `-${uplynuloSekund.toString()}s`,
       animationName: `ukazatelOdpoctu-${indexAnimace}`,
     }"></div>
   </div>
@@ -88,6 +86,7 @@ watch(() => props.delkaCasovace, () => {
 }
 .ukazatelOdpoctu__hodnota {
   background: var(--paleta-primarni);
+  width: 100%;
   height: 100%;
   transform-origin: left center;
   animation-timing-function: linear;

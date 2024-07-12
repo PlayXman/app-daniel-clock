@@ -2,13 +2,16 @@
 import BigNumber from "bignumber.js";
 
 const props = defineProps({
+  /** Celková délka časovače v sekundách. */
   delkaCasovace: {
     type: BigNumber,
     required: true,
   },
+  /** Datum prvního spuštění časovače v sekundách. */
   prvniSpusteniCasovace: {
     type: BigNumber,
   },
+  /** Čas aktivace odpopočtu v sekundách. */
   casSpusteni: {
     type: BigNumber,
     required: true,
